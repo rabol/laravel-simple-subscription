@@ -19,12 +19,19 @@ class SimpleSubscriptionPeriod
         $this->start = $start;
         $this->intervalCount = $intervalCount;
 
-        switch ($this->interval) 
-        {
-            case 'day': $this->end->addDays($this->intervalCount);  break;
-            case 'week': $this->end->addWeeks($this->intervalCount); break;
-            case 'month': $this->end->addMonths($this->intervalCount); break;
-            case 'year': $this->end->addYears($this->intervalCount); break;            
+        switch ($this->interval) {
+            case 'day': $this->end->addDays($this->intervalCount);
+
+break;
+            case 'week': $this->end->addWeeks($this->intervalCount);
+
+break;
+            case 'month': $this->end->addMonths($this->intervalCount);
+
+break;
+            case 'year': $this->end->addYears($this->intervalCount);
+
+break;
             default:
                  break;
         }
