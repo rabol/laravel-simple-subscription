@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Rabol\SimpleSubscription\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 class SimpleSubscriptionPlan extends Model
 {
