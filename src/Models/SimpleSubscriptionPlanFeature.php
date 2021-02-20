@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class SimpleSubscriptionPlanFeature extends Model
 {
     use HasSlug;
 
     protected $table = 'ss_plan_features';
-    
+
     protected $fillable = [
         'plan_id',
         'slug',

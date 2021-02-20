@@ -6,13 +6,15 @@ namespace Rabol\SimpleSubscription\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SimpleSubscriptionPlan extends Model
 {
     use HasSlug;
 
     protected $table = 'ss_plans';
-    
+
     protected $fillable = [
         'slug',
         'name',
