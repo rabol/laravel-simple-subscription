@@ -9,6 +9,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class SimpleSubscriptionPlan extends Model
 {
     use HasSlug;
