@@ -28,9 +28,6 @@ class SimpleSubscriptionPlanFeature extends Model
         'sort_order',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     protected $casts = [
         'plan_id' => 'integer',
         'slug' => 'string',
@@ -59,7 +56,7 @@ class SimpleSubscriptionPlanFeature extends Model
         return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id');
     }
 
-      public function getResetDate(Carbon $dateFrom): Carbon
+    public function getResetDate(Carbon $dateFrom): Carbon
     {
         $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom ?? now());
 
