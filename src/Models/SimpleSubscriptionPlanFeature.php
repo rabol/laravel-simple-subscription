@@ -58,7 +58,7 @@ class SimpleSubscriptionPlanFeature extends Model
 
     public function getResetDate(Carbon $dateFrom): Carbon
     {
-        $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom ?? now());
+        $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom);
 
         return $period->getEndDate();
     }
