@@ -14,8 +14,10 @@ class SimpleSubscriptionPlanFeature extends Model
 {
     use HasSlug;
 
+    protected $table = 'ss_plan_features';
+    
     protected $fillable = [
-        'simple_subscription_plan_id',
+        'plan_id',
         'slug',
         'name',
         'description',
@@ -29,7 +31,7 @@ class SimpleSubscriptionPlanFeature extends Model
      * {@inheritdoc}
      */
     protected $casts = [
-        'simple_subscription_plan_id' => 'integer',
+        'plan_id' => 'integer',
         'slug' => 'string',
         'name' => 'strigng',
         'value' => 'string',
@@ -61,7 +63,7 @@ class SimpleSubscriptionPlanFeature extends Model
 
     public function usage(): HasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'simple_subscription_plan_feature_id', 'id');
+        return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id');
     }
 
     /**

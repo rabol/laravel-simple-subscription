@@ -10,6 +10,8 @@ use Spatie\Sluggable\HasSlug;
 class SimpleSubscriptionPlan extends Model
 {
     use HasSlug;
+
+    protected $table = 'ss_plans';
     
     protected $fillable = [
         'slug',
@@ -74,7 +76,7 @@ class SimpleSubscriptionPlan extends Model
 
     public function features(): HasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'simple_subscription_plan_id', 'id');
+        return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'plan_id', 'id');
     }
 
     /**

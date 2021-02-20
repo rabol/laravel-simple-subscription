@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SimpleSubscriptionPlanSubscriptionUsage extends Model
 {
+    protected $table = 'ss_plan_subscription_usages';
+
     protected $fillable = [
-        'simple_subscription_plan_subscription_id',
-        'simple_subscription_plan_feature_id',
+        'subscription_id',
+        'feature_id',
         'used',
         'valid_until',
     ];
@@ -23,8 +25,8 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
      * {@inheritdoc}
      */
     protected $casts = [
-        'simple_subscription_plan_subscription_id' => 'integer',
-        'simple_subscription_plan_feature_id' => 'integer',
+        'subscription_id' => 'integer',
+        'feature_id' => 'integer',
         'used' => 'integer',
         'valid_until' => 'datetime',
         'deleted_at' => 'datetime',
@@ -37,7 +39,7 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
      */
     public function feature(): BelongsTo
     {
-        return $this->belongsTo(SimpleSubscriptionPlanFeature::class, 'simple_subscription_plan_feature_id', 'id', 'feature');
+        return $this->belongsTo(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id', 'feature');
     }
 
     /**
@@ -47,7 +49,7 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
      */
     public function subscription(): BelongsTo
     {
-        return $this->belongsTo(SimpleSubscriptionPlanSubscription::class, 'simple_subscription_plan_subscription_id', 'id', 'subscription');
+        return $this->belongsTo(SimpleSubscriptionPlanSubscription::class, 'subscription_id', 'id', 'subscription');
     }
 
     /**
@@ -60,7 +62,7 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
      */
     public function scopeByFeatureSlug(Builder $builder, string $featureSlug): Builder
     {
-        $feature = PlanFeature::where('slug', $featureSlug)->first();
+        $feature = SimpleSubscriptionPlanFeature::whereSlug($featureSlug)->first();
 
         return $builder->where('feature_id', $feature->getKey() ?? null);
     }

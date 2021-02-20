@@ -19,7 +19,12 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
             ->name('laravel-simple-subscription')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_laravel_simple_subscription_table')
+            ->hasMigrations(
+                'create_simple_subscription_plans_table', 
+                'create_simple_subscription_plan_subscription_usages_table',
+                'create_simple_subscription_plan_features_table',
+                'create_simple_subscription_plan_subscriptions_table')
             ->hasCommand(SimpleSubscriptionCommand::class);
     }
 }
+

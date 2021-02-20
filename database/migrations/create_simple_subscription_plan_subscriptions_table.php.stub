@@ -8,12 +8,12 @@ class CreateSimpleSubscriptionPlanSubscriptionsTable extends Migration
 {
     public function up()
     {
-        Schema::create('simple_subscription_plan_subscriptions', function (Blueprint $table) {
+        Schema::create('ss_plan_subscriptions', function (Blueprint $table) {
             
             $table->bigIncrements('id');
 
             $table->morphs('subscriber');
-            $table->unsignedBigInteger('simple_subscription_plan_id');
+            $table->unsignedBigInteger('plan_id');
             $table->string('slug');
             $table->string('name');
             $table->string('description')->nullable();

@@ -15,10 +15,13 @@ use Spatie\Sluggable\HasSlug;
 class SimpleSubscriptionPlanSubscription extends Model
 {
     use HasSlug;
+    
+    protected $table = 'ss_plan_subscriptions'; 
+        
     protected $fillable = [
         'subscriber_id',
         'subscriber_type',
-        'simple_subscription_plan_id',
+        'plan_id',
         'slug',
         'name',
         'description',
@@ -94,7 +97,7 @@ class SimpleSubscriptionPlanSubscription extends Model
      */
     public function usage(): hasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'simple_subscription_plan_subscription_id', 'id');
+        return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
     /**
@@ -316,21 +319,14 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    /**
-     * Record feature usage.
-     *
-     * @param string $featureSlug
-     * @param int    $uses
-     *
-     * @return \Rinvex\Subscriptions\Models\PlanSubscriptionUsage
-     */
-    public function recordFeatureUsage(string $featureSlug, int $uses = 1, bool $incremental = true): PlanSubscriptionUsage
+ 
+    public function recordFeatureUsage(string $featureSlug, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
     {
         $feature = $this->plan->features()->where('slug', $featureSlug)->first();
 
         $usage = $this->usage()->firstOrNew([
-            'simple_subscription_plan_subscription_id' => $this->getKey(),
-            'simple_subscription_plan_feature_id' => $feature->getKey(),
+            'subscription_id' => $this->getKey(),
+            'feature_id' => $feature->getKey(),
         ]);
 
         if ($feature->resettable_period) {
