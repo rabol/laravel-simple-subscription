@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rabol\SimpleSubscription\Models;
 
 use Carbon\Carbon;
-use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,10 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
-=======
->>>>>>> b2a760ca96483c7d558dce1f1c07e662bd4b1d44
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
@@ -151,7 +147,7 @@ class SimpleSubscriptionPlanSubscription extends Model
     public function renew()
     {
         if ($this->ended() && $this->canceled()) {
-            throw new LogicException('Unable to renew canceled ended subscription.');
+            throw new \LogicException('Unable to renew canceled ended subscription.');
         }
 
         $subscription = $this;
