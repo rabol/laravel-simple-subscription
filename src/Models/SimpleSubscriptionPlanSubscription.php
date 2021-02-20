@@ -117,7 +117,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         // the billing dates starting today, and sice we are basically creating
         // a new billing cycle, the usage data will be cleared.
         if ($this->plan->invoice_interval !== $plan->invoice_interval || $this->plan->invoice_period !== $plan->invoice_period) {
-            $this->setNewPeriod($plan->invoice_interval, $plan->invoice_period);
+            $this->setNewPeriod($plan->invoice_interval, $plan->invoice_period, Carbon::now());
             $this->usage()->delete();
         }
 
@@ -148,7 +148,7 @@ class SimpleSubscriptionPlanSubscription extends Model
             $subscription->usage()->delete();
 
             // Renew period
-            $subscription->setNewPeriod();
+            $subscription->setNewPeriod($this->plan->invoice_interval,$this->plan->invoice_period, Carbon::now());
             $subscription->canceled_at = null;
             $subscription->save();
         });
