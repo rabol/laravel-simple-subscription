@@ -148,7 +148,7 @@ class SimpleSubscriptionPlanSubscription extends Model
             $subscription->usage()->delete();
 
             // Renew period
-            $subscription->setNewPeriod($this->plan->invoice_interval,$this->plan->invoice_period, Carbon::now());
+            $subscription->setNewPeriod($this->plan->invoice_interval, $this->plan->invoice_period, Carbon::now());
             $subscription->canceled_at = null;
             $subscription->save();
         });
