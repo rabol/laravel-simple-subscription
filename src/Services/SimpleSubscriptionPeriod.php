@@ -8,101 +8,45 @@ use Carbon\Carbon;
 
 class SimpleSubscriptionPeriod
 {
-    /**
-     * Starting date of the period.
-     *
-     * @var string
-     */
-    protected $start;
+    protected Carbon $start;
+    protected Carbon $end;
+    protected string $interval;
+    protected int $intervalCount = 1;
 
-    /**
-     * Ending date of the period.
-     *
-     * @var string
-     */
-    protected $end;
-
-    /**
-     * Interval.
-     *
-     * @var string
-     */
-    protected $interval;
-
-    /**
-     * Interval count.
-     *
-     * @var int
-     */
-    protected $period = 1;
-
-    /**
-     * Create a new Period instance.
-     *
-     * @param string $interval
-     * @param int    $count
-     * @param string $start
-     *
-     * @return void
-     */
-    public function __construct($interval = 'month', $count = 1, $start = '')
+    public function __construct(?string $interval = 'month', ?int $intervalCount = 1, ?Carbon $start = now())
     {
         $this->interval = $interval;
+        $this->start = $start;
+        $this->intervalCount = $intervalCount;
 
-        if (empty($start)) {
-            $this->start = Carbon::now();
-        } elseif (! $start instanceof Carbon) {
-            $this->start = new Carbon($start);
-        } else {
-            $this->start = $start;
+        switch ($this->interval) 
+        {
+            case 'day': $this->end->addDays($this->intervalCount);  break;
+            case 'week': $this->end->addWeeks($this->intervalCount); break;
+            case 'month': $this->end->addMonths($this->intervalCount); break;
+            case 'year': $this->end->addYears($this->intervalCount); break;            
+            default:
+                 break;
         }
-
-        if ($count > 0) {
-            $this->period = $count;
-        }
-
-        $start = clone $this->start;
-        $method = 'add'.ucfirst($this->interval).'s';
-        $this->end = $start->{$method}($this->period);
     }
 
-    /**
-     * Get start date.
-     *
-     * @return \Carbon\Carbon
-     */
     public function getStartDate(): Carbon
     {
         return $this->start;
     }
 
-    /**
-     * Get end date.
-     *
-     * @return \Carbon\Carbon
-     */
     public function getEndDate(): Carbon
     {
         return $this->end;
     }
 
-    /**
-     * Get period interval.
-     *
-     * @return string
-     */
     public function getInterval(): string
     {
         return $this->interval;
     }
 
-    /**
-     * Get period interval count.
-     *
-     * @return int
-     */
     public function getIntervalCount(): int
     {
-        return $this->period;
+        return $this->intervalCount;
     }
 }

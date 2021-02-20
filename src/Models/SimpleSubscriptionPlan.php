@@ -56,9 +56,6 @@ class SimpleSubscriptionPlan extends Model
         'sort_order' => 'integer',
     ];
 
-    /**
-     * Get the options for generating the slug.
-     */
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()
@@ -66,11 +63,6 @@ class SimpleSubscriptionPlan extends Model
             ->saveSlugsTo('slug');
     }
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
     public function getRouteKeyName()
     {
         return 'slug';
@@ -81,41 +73,21 @@ class SimpleSubscriptionPlan extends Model
         return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'plan_id', 'id');
     }
 
-    /**
-     * The plan may have many subscriptions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function subscriptions(): HasMany
     {
         return $this->hasMany(SimpleSubscriptionPlanSubscription::class, 'simple_subscription_plan_id', 'id');
     }
 
-    /**
-     * Check if plan is free.
-     *
-     * @return bool
-     */
     public function isFree(): bool
     {
         return (float) $this->price <= 0.00;
     }
 
-    /**
-     * Check if plan has trial.
-     *
-     * @return bool
-     */
     public function hasTrial(): bool
     {
         return $this->trial_period && $this->trial_interval;
     }
 
-    /**
-     * Check if plan has grace.
-     *
-     * @return bool
-     */
     public function hasGrace(): bool
     {
         return $this->grace_period && $this->grace_interval;
@@ -126,11 +98,6 @@ class SimpleSubscriptionPlan extends Model
         return $this->features()->whereSlog($slug)->first();
     }
 
-    /**
-     * Activate the plan.
-     *
-     * @return $this
-     */
     public function activate()
     {
         $this->update(['is_active' => true]);
@@ -138,11 +105,6 @@ class SimpleSubscriptionPlan extends Model
         return $this;
     }
 
-    /**
-     * Deactivate the plan.
-     *
-     * @return $this
-     */
     public function deactivate()
     {
         $this->update(['is_active' => false]);

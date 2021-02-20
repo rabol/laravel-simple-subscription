@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
@@ -34,9 +34,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         'canceled_at',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     protected $casts = [
         'subscriber_id' => 'integer',
         'subscriber_type' => 'string',
@@ -51,9 +48,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         'canceled_at' => 'datetime',
     ];
 
-    /**
-     * Get the options for generating the slug.
-     */
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()
@@ -61,11 +55,6 @@ class SimpleSubscriptionPlanSubscription extends Model
             ->saveSlugsTo('slug');
     }
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
     public function getRouteKeyName()
     {
         return 'slug';
@@ -82,83 +71,41 @@ class SimpleSubscriptionPlanSubscription extends Model
         });
     }
 
-    /**
-     * Get the owning subscriber.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
-     */
     public function subscriber(): MorphTo
     {
         return $this->morphTo('subscriber', 'subscriber_type', 'subscriber_id', 'id');
     }
 
-    /**
-     * The subscription may have many usage.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function usage(): hasMany
     {
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
-    /**
-     * Check if subscription is active.
-     *
-     * @return bool
-     */
     public function active(): bool
     {
         return ! $this->ended() || $this->onTrial();
     }
 
-    /**
-     * Check if subscription is inactive.
-     *
-     * @return bool
-     */
     public function inactive(): bool
     {
         return ! $this->active();
     }
 
-    /**
-     * Check if subscription is currently on trial.
-     *
-     * @return bool
-     */
     public function onTrial(): bool
     {
         return $this->trial_ends_at ? Carbon::now()->lt($this->trial_ends_at) : false;
     }
 
-    /**
-     * Check if subscription is canceled.
-     *
-     * @return bool
-     */
     public function canceled(): bool
     {
         return $this->canceled_at ? Carbon::now()->gte($this->canceled_at) : false;
     }
 
-    /**
-     * Check if subscription period has ended.
-     *
-     * @return bool
-     */
     public function ended(): bool
     {
         return $this->ends_at ? Carbon::now()->gte($this->ends_at) : false;
     }
 
-    /**
-     * Cancel subscription.
-     *
-     * @param bool $immediately
-     *
-     * @return $this
-     */
     public function cancel($immediately = false)
     {
         $this->canceled_at = Carbon::now();
@@ -297,7 +244,7 @@ class SimpleSubscriptionPlanSubscription extends Model
      *
      * @return $this
      */
-    protected function setNewPeriod(?string $invoice_interval, ?int $invoice_period, ?string $start)
+    protected function setNewPeriod(?string $invoice_interval, ?int $invoice_period, ?Carbon $start)
     {
         if (is_null($invoice_interval)) {
             $invoice_interval = $this->plan->invoice_interval;
@@ -361,13 +308,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $usage;
     }
 
-    /**
-     * Determine if the feature can be used.
-     *
-     * @param string $featureSlug
-     *
-     * @return bool
-     */
     public function canUseFeature(string $featureSlug): bool
     {
         $featureValue = $this->getFeatureValue($featureSlug);
@@ -387,13 +327,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->getFeatureRemainings($featureSlug) > 0;
     }
 
-    /**
-     * Get how many times the feature has been used.
-     *
-     * @param string $featureSlug
-     *
-     * @return int
-     */
     public function getFeatureUsage(string $featureSlug): int
     {
         $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
@@ -401,25 +334,11 @@ class SimpleSubscriptionPlanSubscription extends Model
         return ! $usage->expired() ? $usage->used : 0;
     }
 
-    /**
-     * Get the available uses.
-     *
-     * @param string $featureSlug
-     *
-     * @return int
-     */
     public function getFeatureRemainings(string $featureSlug): int
     {
         return $this->getFeatureValue($featureSlug) - $this->getFeatureUsage($featureSlug);
     }
 
-    /**
-     * Get feature value.
-     *
-     * @param string $featureSlug
-     *
-     * @return mixed
-     */
     public function getFeatureValue(string $featureSlug)
     {
         $feature = $this->plan->features()->where('slug', $featureSlug)->first();
