@@ -56,14 +56,14 @@ class SimpleSubscriptionPlan extends Model
         'sort_order' => 'integer',
     ];
 
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -75,7 +75,7 @@ class SimpleSubscriptionPlan extends Model
 
     public function subscriptions(): HasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanSubscription::class, 'simple_subscription_plan_id', 'id');
+        return $this->hasMany(SimpleSubscriptionPlanSubscription::class, 'plan_id', 'id');
     }
 
     public function isFree(): bool
@@ -98,14 +98,14 @@ class SimpleSubscriptionPlan extends Model
         return $this->features()->whereSlog($slug)->first();
     }
 
-    public function activate()
+    public function activate(): self
     {
         $this->update(['is_active' => true]);
 
         return $this;
     }
 
-    public function deactivate()
+    public function deactivate(): self
     {
         $this->update(['is_active' => false]);
 

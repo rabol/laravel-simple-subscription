@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\DB;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Support\Facades\DB;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
@@ -165,27 +165,11 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    /**
-     * Get bookings of the given subscriber.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $subscriber
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeOfSubscriber(Builder $builder, Model $subscriber): Builder
     {
         return $builder->where('subscriber_type', $subscriber->getMorphClass())->where('subscriber_id', $subscriber->getKey());
     }
 
-    /**
-     * Scope subscriptions with ending trial.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param int                                   $dayRange
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeFindEndingTrial(Builder $builder, int $dayRange = 3): Builder
     {
         $from = Carbon::now();
@@ -194,26 +178,11 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $builder->whereBetween('trial_ends_at', [$from, $to]);
     }
 
-    /**
-     * Scope subscriptions with ended trial.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeFindEndedTrial(Builder $builder): Builder
     {
         return $builder->where('trial_ends_at', '<=', now());
     }
 
-    /**
-     * Scope subscriptions with ending periods.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param int                                   $dayRange
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeFindEndingPeriod(Builder $builder, int $dayRange = 3): Builder
     {
         $from = Carbon::now();
@@ -222,28 +191,12 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $builder->whereBetween('ends_at', [$from, $to]);
     }
 
-    /**
-     * Scope subscriptions with ended periods.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeFindEndedPeriod(Builder $builder): Builder
     {
         return $builder->where('ends_at', '<=', now());
     }
 
-    /**
-     * Set new subscription period.
-     *
-     * @param string $invoice_interval
-     * @param int    $invoice_period
-     * @param string $start
-     *
-     * @return $this
-     */
-    protected function setNewPeriod(?string $invoice_interval, ?int $invoice_period, ?Carbon $start)
+    protected function setNewPeriod(?string $invoice_interval, ?int $invoice_period, ?Carbon $start): self
     {
         if (is_null($invoice_interval)) {
             $invoice_interval = $this->plan->invoice_interval;
