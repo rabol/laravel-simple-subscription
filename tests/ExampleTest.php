@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\Skeleton\Tests;
+namespace Rabol\SimpleSubscription\Tests;
 
 class ExampleTest extends TestCase
 {

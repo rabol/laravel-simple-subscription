@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Skeleton\Commands;
+namespace Rabol\SimpleSubscription\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class SimpleSubscriptionCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-simple-subscription';
 
     public $description = 'My command';
 

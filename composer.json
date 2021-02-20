@@ -1,25 +1,27 @@
 {
-    "name": ":vendor_name/:package_name",
-    "description": ":package_description",
+    "name": "rabol/laravel-simple-subscription",
+    "description": "Simple subscription package for Laravel",
     "keywords": [
-        ":vendor_name",
-        ":package_name"
+        "rabol",
+        "laravel-simple-subscription"
     ],
-    "homepage": "https://github.com/:vendor_name/:package_name",
+    "homepage": "https://github.com/rabol/laravel-simple-subscription",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
+            "name": "Steen Rabol",
+            "email": "steen@rabol.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^7.4|^8.0",
+        "illuminate/contracts": "^8.0",
         "spatie/laravel-package-tools": "^1.1",
-        "illuminate/contracts": "^8.0"
+        "spatie/laravel-sluggable": "^2.6"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.18",
         "orchestra/testbench": "^6.0",
         "phpunit/phpunit": "^9.3",
         "spatie/laravel-ray": "^1.9",
@@ -27,19 +29,22 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src",
-            "Spatie\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Rabol\\SimpleSubscription\\": "src",
+            "Rabol\\SimpleSubscription\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "Rabol\\SimpleSubscription\\Tests\\": "tests"
         }
     },
     "scripts": {
         "psalm": "vendor/bin/psalm",
         "test": "vendor/bin/phpunit --colors=always",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "format": [
+            "php-cs-fixer fix --show-progress=estimating --config=.php_cs.dist"
+        ]
     },
     "config": {
         "sort-packages": true
@@ -47,10 +52,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Skeleton\\SkeletonServiceProvider"
+                "Rabol\\SimpleSubscription\\SimpleSubscriptionServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\Skeleton\\SkeletonFacade"
+                "SimpleSubscription": "Rabol\\SimpleSubscription\\SimpleSubscriptionFacade"
             }
         }
     },
