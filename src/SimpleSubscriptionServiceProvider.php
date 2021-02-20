@@ -36,6 +36,7 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
         // Add strip_tags validation rule
         Validator::extend('strip_tags', function ($attribute, $value) {
             $attribute = $attribute;
+
             return strip_tags($value) === $value;
         }, 'Noting to add.');
 
