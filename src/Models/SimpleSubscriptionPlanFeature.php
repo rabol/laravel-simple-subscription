@@ -31,7 +31,7 @@ class SimpleSubscriptionPlanFeature extends Model
     protected $casts = [
         'plan_id' => 'integer',
         'slug' => 'string',
-        'name' => 'strigng',
+        'name' => 'string',
         'value' => 'string',
         'resettable_period' => 'integer',
         'resettable_interval' => 'string',

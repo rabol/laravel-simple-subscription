@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
+use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
+    use BelongsToPlan;
     use HasSlug;
 
     protected $table = 'ss_plan_subscriptions';
@@ -60,17 +62,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         return 'slug';
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::validating(function (self $model) {
-            if (! $model->starts_at || ! $model->ends_at) {
-                $model->setNewPeriod();
-            }
-        });
-    }
-
     public function subscriber(): MorphTo
     {
         return $this->morphTo('subscriber', 'subscriber_type', 'subscriber_id', 'id');
@@ -106,7 +97,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->ends_at ? Carbon::now()->gte($this->ends_at) : false;
     }
 
-    public function cancel($immediately = false)
+    public function cancel($immediately = false): SimpleSubscriptionPlanSubscription
     {
         $this->canceled_at = Carbon::now();
 
@@ -119,7 +110,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    public function changePlan(SimpleSubscriptionPlan $plan)
+    public function changePlan(SimpleSubscriptionPlan $plan): SimpleSubscriptionPlanSubscription
     {
         // If plans does not have the same billing frequency
         // (e.g., invoice_interval and invoice_period) we will update
@@ -131,7 +122,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         }
 
         // Attach new plan to subscription
-        $this->plan_id = $plan->getKey();
+        $this->plan_id = $plan->id;
         $this->save();
 
         return $this;
@@ -275,7 +266,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         }
 
         // Check for available uses
-        return $this->getFeatureRemainings($featureSlug) > 0;
+        return $this->getFeatureRemaining($featureSlug) > 0;
     }
 
     public function getFeatureUsage(string $featureSlug): int
@@ -285,7 +276,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         return ! $usage->expired() ? $usage->used : 0;
     }
 
-    public function getFeatureRemainings(string $featureSlug): int
+    public function getFeatureRemaining(string $featureSlug): int
     {
         return $this->getFeatureValue($featureSlug) - $this->getFeatureUsage($featureSlug);
     }

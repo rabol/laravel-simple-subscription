@@ -95,7 +95,7 @@ class SimpleSubscriptionPlan extends Model
 
     public function getFeatureBySlug(string $slug): ?SimpleSubscriptionPlanFeature
     {
-        return $this->features()->whereSlog($slug)->first();
+        return $this->features()->whereSlug($slug)->first();
     }
 
     public function activate(): self
