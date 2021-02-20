@@ -20,11 +20,11 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigrations(
-                'create_simple_subscription_plans_table', 
+                'create_simple_subscription_plans_table',
                 'create_simple_subscription_plan_subscription_usages_table',
                 'create_simple_subscription_plan_features_table',
-                'create_simple_subscription_plan_subscriptions_table')
+                'create_simple_subscription_plan_subscriptions_table'
+            )
             ->hasCommand(SimpleSubscriptionCommand::class);
     }
 }
-
