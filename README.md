@@ -12,6 +12,12 @@ It is heavvly inspired by the renvex/laravel-subscriptions package, just simpler
 
 Sorry, My point is that the renvex packages seems to be abandond.
 
+## Payments
+
+- Payment support is in the works, so stay tuned.
+- We will most likley use laraveldaily/laravel-invoices and then a payment package
+
+
 ## Installation
 
 You can install the package via composer:
@@ -41,9 +47,28 @@ return [
 
 ## Usage
 
+### Add Subscriptions to your model
+
+For the sake of simplicity there is a trait that can be added to any model.
+
+The most common use case is to add Subscription functionality to your User model just use the `Rabol\SimpleSubscription\Traits\HasSubscriptions` trait like this:
+
 ```php
-Comming soon
+namespace App\Models;
+
+use Rabol\SimpleSubscription\Traits\HasSubscriptions;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasSubscriptions;
+}
 ```
+
+That's it, now you can use subscriptions on your user modelwe only have to use that trait in our User model! Now your users may subscribe to plans.
+
+More documentation will be added soon.
+
 
 ## Testing
 
