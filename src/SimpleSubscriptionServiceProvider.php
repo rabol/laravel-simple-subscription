@@ -7,8 +7,6 @@ use Rabol\SimpleSubscription\Commands\SimpleSubscriptionCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-
-
 class SimpleSubscriptionServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
@@ -37,12 +35,11 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
 
         // Add strip_tags validation rule
         Validator::extend('strip_tags', function ($attribute, $value) {
-
-            if($attribute == 'name')
-               return strip_tags($value) === $value;
+            if ($attribute == 'name') {
+                return strip_tags($value) === $value;
+            }
 
             return strip_tags($value) === $value;
-
         }, 'Noting to add.');
 
         return $this;
