@@ -7,6 +7,7 @@ namespace Rabol\SimpleSubscription\Traits;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Rabol\SimpleSubscription\Models\SimpleSubscriptionPlan;
 use Rabol\SimpleSubscription\Models\SimpleSubscriptionPlanSubscription;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 
@@ -43,7 +44,7 @@ trait HasSubscriptions
         return $subscription && $subscription->active();
     }
 
-    public function newSubscription($subscription, Plan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
+    public function newSubscription($subscription, SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
     {
         $trial = new SimpleSubscriptionPeriod($plan->trial_interval, $plan->trial_period, $startDate ?? now());
         $period = new SimpleSubscriptionPeriod($plan->invoice_interval, $plan->invoice_period, $trial->getEndDate());
