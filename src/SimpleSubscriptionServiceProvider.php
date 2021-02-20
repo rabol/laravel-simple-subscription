@@ -2,10 +2,10 @@
 
 namespace Rabol\SimpleSubscription;
 
+use Illuminate\Support\Facades\Validator;
 use Rabol\SimpleSubscription\Commands\SimpleSubscriptionCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Illuminate\Support\Facades\Validator;
 
 class SimpleSubscriptionServiceProvider extends PackageServiceProvider
 {
