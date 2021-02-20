@@ -6,15 +6,11 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/rabol/laravel-simple-subscription.svg?style=flat-square)](https://packagist.org/packages/rabol/laravel-simple-subscription)
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+This is a simple to use subscription package for Laravel.
 
-## Support us
+It is heavvly inspired by the renvex/laravel-subscriptions package, just simpler and working :)
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/package-laravel-simple-subscription-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/package-laravel-simple-subscription-laravel)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Sorry, My point is that the renvex packages seems to be abandond.
 
 ## Installation
 
@@ -46,8 +42,7 @@ return [
 ## Usage
 
 ```php
-$laravel-simple-subscription = new Rabol\SimpleSubscription();
-echo $laravel-simple-subscription->echoPhrase('Hello, Rabol!');
+Comming soon
 ```
 
 ## Testing

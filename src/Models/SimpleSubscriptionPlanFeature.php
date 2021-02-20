@@ -42,9 +42,6 @@ class SimpleSubscriptionPlanFeature extends Model
         'deleted_at' => 'datetime',
     ];
 
-    /**
-     * Get the options for generating the slug.
-     */
     public function getSlugOptions() : SlugOptions
     {
         return SlugOptions::create()
@@ -52,11 +49,6 @@ class SimpleSubscriptionPlanFeature extends Model
             ->saveSlugsTo('slug');
     }
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
     public function getRouteKeyName()
     {
         return 'slug';
@@ -67,14 +59,7 @@ class SimpleSubscriptionPlanFeature extends Model
         return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id');
     }
 
-    /**
-     * Get feature's reset date.
-     *
-     * @param string $dateFrom
-     *
-     * @return \Carbon\Carbon
-     */
-    public function getResetDate(Carbon $dateFrom): Carbon
+      public function getResetDate(Carbon $dateFrom): Carbon
     {
         $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom ?? now());
 
