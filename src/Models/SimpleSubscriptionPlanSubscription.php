@@ -11,13 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+use DB;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
     use HasSlug;
-    
+
     protected $table = 'ss_plan_subscriptions';
-        
+
     protected $fillable = [
         'subscriber_id',
         'subscriber_type',
@@ -170,13 +172,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    /**
-     * Change subscription plan.
-     *
-     * @param \Rinvex\Subscriptions\Models\Plan $plan
-     *
-     * @return $this
-     */
+
     public function changePlan(SimpleSubscriptionPlan $plan)
     {
         // If plans does not have the same billing frequency
@@ -318,7 +314,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         return $this;
     }
- 
+
     public function recordFeatureUsage(string $featureSlug, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
     {
         $feature = $this->plan->features()->where('slug', $featureSlug)->first();
@@ -349,14 +345,7 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $usage;
     }
 
-    /**
-     * Reduce usage.
-     *
-     * @param string $featureSlug
-     * @param int    $uses
-     *
-     * @return \Rinvex\Subscriptions\Models\PlanSubscriptionUsage|null
-     */
+
     public function reduceFeatureUsage(string $featureSlug, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
         $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
