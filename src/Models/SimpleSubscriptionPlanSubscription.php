@@ -16,7 +16,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 {
     use HasSlug;
     
-    protected $table = 'ss_plan_subscriptions'; 
+    protected $table = 'ss_plan_subscriptions';
         
     protected $fillable = [
         'subscriber_id',
@@ -318,7 +318,6 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         return $this;
     }
-
  
     public function recordFeatureUsage(string $featureSlug, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
     {
