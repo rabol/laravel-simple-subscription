@@ -33,6 +33,6 @@ class SimpleSubscriptionPlanFeature extends Model
 
     public function usage(): HasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id');
+        return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'feature_id', 'id');
     }
 }
