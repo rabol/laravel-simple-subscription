@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
-use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
