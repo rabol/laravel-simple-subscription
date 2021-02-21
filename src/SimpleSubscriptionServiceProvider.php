@@ -16,6 +16,7 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
+/*
         $package
             ->name('laravel-simple-subscription')
             ->hasConfigFile()
@@ -29,6 +30,19 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
                 ]
             )
             ->hasCommand(SimpleSubscriptionCommand::class);
+*/
+        $package
+            ->name('laravel-simple-subscription')
+             ->hasMigrations(
+                [
+                    'create_simple_subscription_plans_table',
+                    'create_simple_subscription_plan_subscription_usages_table',
+                    'create_simple_subscription_plan_features_table',
+                    'create_simple_subscription_plan_subscriptions_table'
+                ]
+                );
+ 
+
     }
 
     public function boot()
