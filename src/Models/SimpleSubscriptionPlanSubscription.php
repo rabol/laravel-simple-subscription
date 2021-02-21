@@ -72,6 +72,16 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
+    public function plan()
+    {
+        return $this->belongsTo(SimpleSubscriptionPlan::class, 'plan_id', 'id');
+    }
+
+    public function getPlanNameAttribute()
+    {
+        return $this->plan->name;
+    }
+    
     public function active(): bool
     {
         return ! $this->ended() || $this->onTrial();

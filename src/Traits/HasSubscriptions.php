@@ -44,14 +44,18 @@ trait HasSubscriptions
         return $subscription && $subscription->active();
     }
 
-    public function newSubscription($subscription, SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
+    public function newSubscription(string $subscription, SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
     {
-        $trial = new SimpleSubscriptionPeriod($plan->trial_interval, $plan->trial_period, $startDate ?? now());
+        if(is_null($startDate))
+            $startDate = Carbon::now();
+
+        $trial = new SimpleSubscriptionPeriod($plan->trial_interval, $plan->trial_period, $startDate);
         $period = new SimpleSubscriptionPeriod($plan->invoice_interval, $plan->invoice_period, $trial->getEndDate());
 
         return $this->subscriptions()->create([
             'name' => $subscription,
-            'plan_id' => $plan->getKey(),
+            'description' => $plan->description,
+            'plan_id' => $plan->id,
             'trial_ends_at' => $trial->getEndDate(),
             'starts_at' => $period->getStartDate(),
             'ends_at' => $period->getEndDate(),
