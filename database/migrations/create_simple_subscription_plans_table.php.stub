@@ -11,38 +11,38 @@ class CreateSimpleSubscriptionPlansTable extends Migration
         Schema::create('ss_plans', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('name');
-            
+            $table->string('name')->unique();
+
             $table->longText('description')->nullable();
-            
+
             $table->boolean('is_active')->default(true)->nullable();
-            
+
             $table->decimal('price')->default('0.00')->nullable();
             $table->decimal('signup_fee')->default('0.00')->nullable();
             $table->string('currency', 3)->default('EUR')->nullable();
-            
+
             $table->smallInteger('trial_period')->unsigned()->default(0)->nullable();
             $table->string('trial_interval')->default('day')->nullable();
-            
+
             $table->smallInteger('invoice_period')->unsigned()->default(0)->nullable();
             $table->string('invoice_interval')->default('month')->nullable();
-            
+
             $table->smallInteger('grace_period')->unsigned()->default(0)->nullable();
             $table->string('grace_interval')->default('day')->nullable();
-            
+
             $table->tinyInteger('prorate_day')->unsigned()->nullable();
             $table->tinyInteger('prorate_period')->unsigned()->nullable();
             $table->tinyInteger('prorate_extend_due')->unsigned()->nullable();
             $table->smallInteger('active_subscribers_limit')->unsigned()->nullable();
-            
+
             $table->mediumInteger('sort_order')->unsigned()->default(0)->nullable();
-            
+
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('simple_subscription_plans');    
+        Schema::dropIfExists('simple_subscription_plans');
     }
 }

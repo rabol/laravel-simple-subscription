@@ -71,7 +71,7 @@ That's it, now you can use subscriptions on your user model only have to use tha
 
 ```php
 $newPlan = SimpleSubscriptionPlan::create([
-    'name' => 'My cool plan',
+    'name' => 'My cool subscription',
     'description' => 'This is a very cool plan',
     'is_active' => true,
     'price' => 12.50,
