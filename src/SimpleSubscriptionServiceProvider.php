@@ -40,7 +40,7 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
             }
 
             return strip_tags($value) === $value;
-        }, 'Noting to add.');
+        }, "We don't allow HTML tags in the input.");
 
         return $this;
     }
