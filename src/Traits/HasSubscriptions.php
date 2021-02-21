@@ -46,8 +46,9 @@ trait HasSubscriptions
 
     public function newSubscription(string $subscription, SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
     {
-        if(is_null($startDate))
+        if (is_null($startDate)) {
             $startDate = Carbon::now();
+        }
 
         $trial = new SimpleSubscriptionPeriod($plan->trial_interval, $plan->trial_period, $startDate);
         $period = new SimpleSubscriptionPeriod($plan->invoice_interval, $plan->invoice_period, $trial->getEndDate());
