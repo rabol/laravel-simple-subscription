@@ -192,15 +192,16 @@ $user->subscription('My cool subscription')->recordFeatureUsage('My cool feature
 ### Reduce Feature Usage
 
 Reducing the feature usage is _almost_ the same as incrementing it. Here we only _substract_ a given quantity (default is `1`) to the actual usage:
-The difference from the ```recordFeatureUsage``` method is that the ```reduceFeatureUsage``` will not look at reset date
+The difference from the `````recordFeatureUsage````` method is that the ```reduceFeatureUsage``` will not look at reset date
 ```php
 $user->subscription('My cool subscription')->reduceFeatureUsage('My cool feature', 2);
 ```
 
 ### Increase Feature Usage
 
-Increasing the feature usage is _almost_ the same as incrementing it. Here we only _substract_ a given quantity (default is `1`) to the actual usage:
-The difference from the ```recordFeatureUsage``` method is that the ```increaseFeatureUsage``` will not look at reset date
+Increasing the feature usage is _almost_ the same as ```recordFeatureUsage```. this function simply _add_ a given quanti to the value:
+
+One more difference from the ```recordFeatureUsage``` method is that the ```increaseFeatureUsage``` will not look at reset date
 ```php
 $user->subscription('My cool subscription')->increaseFeatureUsage('My cool feature', 2);
 ```
