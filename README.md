@@ -199,7 +199,7 @@ $user->subscription('My cool subscription')->reduceFeatureUsage('My cool feature
 
 ### Increase Feature Usage
 
-Increasing the feature usage is _almost_ the same as ```recordFeatureUsage```. this function simply _add_ a given quanti to the value:
+Increasing the feature usage is _almost_ the same as ```recordFeatureUsage```. this function simply _add_ a given quantity to the value:
 
 One more difference from the ```recordFeatureUsage``` method is that the ```increaseFeatureUsage``` will not look at reset date
 ```php
