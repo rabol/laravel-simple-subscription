@@ -37,7 +37,16 @@ trait HasSubscriptions
         return SimpleSubscriptionPlanSubscription::whereIn('id', $planIds)->get();
     }
 
-    public function subscribedTo($planId): bool
+    public function subscribedToPlanName(string $planName): bool
+    {
+        $planId = SimpleSubscriptionPlan::whereName($planName)->first()->id;
+
+        $subscription = $this->subscriptions()->where('plan_id', $planId)->first();
+
+        return $subscription && $subscription->active();
+    }
+
+    public function subscribedToPlanId($planId): bool
     {
         $subscription = $this->subscriptions()->where('plan_id', $planId)->first();
 

@@ -88,4 +88,9 @@ class SimpleSubscriptionPlan extends Model
 
         return $this;
     }
+
+    public function getFeatureByName(string $featureName): ?SimpleSubscriptionPlanFeature
+    {
+        return $this->features()->where('name', $featureName)->first();
+    }
 }

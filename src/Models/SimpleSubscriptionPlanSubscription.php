@@ -200,13 +200,24 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    public function recordFeatureUsage(int $featureId, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
+    public function recordFeatureUsage(string $featureName, int $uses = 1, bool $incremental = true): ?SimpleSubscriptionPlanSubscriptionUsage
+    {
+        $feature = $this->plan->features()->whereName($featureName)->first();
+        if ($feature) {
+            return $this->recordFeatureUsageId($feature->id, $uses, $incremental);
+        }
+
+        return null;
+    }
+
+    public function recordFeatureUsageId(int $featureId, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
     {
         $feature = $this->plan->features()->whereId($featureId)->first();
 
         $usage = $this->usage()->firstOrNew([
             'subscription_id' => $this->id,
             'feature_id' => $feature->id,
+            'used' => 0,
         ]);
 
         if ($feature->resettable_period) {
@@ -225,12 +236,24 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         $usage->used = ($incremental ? $usage->used + $uses : $uses);
 
-        $usage->save();
+        if ($usage->used >= 0) {
+            $usage->save();
+        }
 
         return $usage;
     }
 
-    public function increaseFeatureUsage(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
+    public function increaseFeatureUsage(string $featureName, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
+    {
+        $feature = $this->plan->features()->whereName($featureName)->first();
+        if ($feature) {
+            return $this->increaseFeatureUsageId($feature->id, $uses);
+        }
+
+        return null;
+    }
+
+    public function increaseFeatureUsageId(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
         $usage = $this->usage()->whereFeatureId($featureId)->whereSubscriptionId($this->id)->first();
 
@@ -238,33 +261,115 @@ class SimpleSubscriptionPlanSubscription extends Model
             $usage = SimpleSubscriptionPlanSubscriptionUsage::create([
                 'subscription_id' => $this->id,
                 'feature_id' => $featureId,
+                'used' => 0,
             ]);
         }
 
         $usage->used = $usage->used + $uses;
-        $usage->update();
+
+        if ($usage->used >= 0) {
+            $usage->update();
+        }
 
         return $usage;
     }
 
-    public function canUseFeature(int $featureId): bool
+    public function reduceFeatureUsage(string $featureName, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
-        return $this->getFeatureRemaining($featureId) != 0;
+        $feature = SimpleSubscriptionPlanFeature::where([
+            ['plan_id',$this->plan_id],
+            ['name', $featureName],
+        ])->first();
+
+        if ($feature) {
+            return $this->reduceFeatureUsageId($feature->id, $uses);
+        }
+
+        return null;
     }
 
-    public function getFeatureUsage(int $featureId): int
+    public function reduceFeatureUsageId(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
+    {
+        $usage = $this->usage()->whereFeatureId($featureId)->whereSubscriptionId($this->id)->first();
+
+        if (is_null($usage)) {
+            $usage = SimpleSubscriptionPlanSubscriptionUsage::create([
+                'subscription_id' => $this->id,
+                'feature_id' => $featureId,
+                'used' => 0,
+            ]);
+        }
+
+        $usage->used = $usage->used - $uses;
+
+        if ($usage->used >= 0) {
+            $usage->update();
+        }
+
+        return $usage;
+    }
+
+    public function canUseFeature(string $featureName): bool
+    {
+        $remaining = $this->getFeatureRemaining($featureName);
+
+        return  ($remaining != 0 && $remaining >= 0) ;
+    }
+
+    public function canUseFeatureId(int $featureId): bool
+    {
+        return $this->getFeatureRemainingId($featureId) != 0;
+    }
+
+    public function getFeatureUsage(string $featureName): int
+    {
+        $feature = SimpleSubscriptionPlanFeature::where([
+            ['plan_id', $this->plan_id],
+            ['name',$featureName],
+        ])->first();
+
+        if (! $feature) {
+            return 0;
+        }
+
+        $usage = SimpleSubscriptionPlanSubscriptionUsage::where(
+            [
+                ['subscription_id', $this->id],
+                ['feature_id', $feature->id],
+            ]
+        )->first();
+
+        return $usage->used ?? 0;
+    }
+
+    public function getFeatureUsageId(int $featureId): int
     {
         $usage = $this->usage()->whereFeatureId($featureId)->first();
 
         return $usage->used ?? 0;
     }
 
-    public function getFeatureRemaining(int $featureId): int
+    public function getFeatureRemaining(string $featureName): int
     {
-        return $this->getFeatureValue($featureId) - $this->getFeatureUsage($featureId);
+        return $this->getFeatureValue($featureName) - $this->getFeatureUsage($featureName);
     }
 
-    public function getFeatureValue(int $featureId): int
+    public function getFeatureRemainingId(int $featureId): int
+    {
+        return $this->getFeatureValueId($featureId) - $this->getFeatureUsageId($featureId);
+    }
+
+    public function getFeatureValue(string $featureName): int
+    {
+        $feature = SimpleSubscriptionPlanFeature::where([
+            ['plan_id', $this->plan_id],
+            ['name',$featureName],
+        ])->first();
+
+        return $feature->value ?? 0;
+    }
+
+    public function getFeatureValueId(int $featureId): int
     {
         $feature = $this->plan->features()->whereId($featureId)->first();
 
