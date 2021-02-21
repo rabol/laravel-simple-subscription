@@ -6,9 +6,14 @@ namespace Rabol\SimpleSubscription\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
+use Carbon\Carbon;
+use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 
 class SimpleSubscriptionPlanFeature extends Model
 {
+    use BelongsToPlan;
+    
     protected $table = 'ss_plan_features';
 
     protected $fillable = [
@@ -34,5 +39,19 @@ class SimpleSubscriptionPlanFeature extends Model
     public function usage(): HasMany
     {
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'feature_id', 'id');
+    }
+
+    /**
+     * Get feature's reset date.
+     *
+     * @param string $dateFrom
+     *
+     * @return \Carbon\Carbon
+     */
+    public function getResetDate(Carbon $dateFrom): Carbon
+    {
+        $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom ?? now());
+
+        return $period->getEndDate();
     }
 }

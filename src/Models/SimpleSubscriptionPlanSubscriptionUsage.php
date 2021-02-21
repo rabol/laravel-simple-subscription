@@ -17,6 +17,7 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
         'feature_id',
         'used',
         'valid_until',
+
     ];
 
     protected $casts = [

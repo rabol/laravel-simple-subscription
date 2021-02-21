@@ -12,9 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
+use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
+    use BelongsToPlan;
+
     protected $table = 'ss_plan_subscriptions';
 
     protected $fillable = [
@@ -53,15 +56,15 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
-    public function plan(): BelongsTo
-    {
-        return $this->belongsTo(SimpleSubscriptionPlan::class, 'plan_id', 'id');
-    }
+//    public function plan(): BelongsTo
+//    {
+//        return $this->belongsTo(SimpleSubscriptionPlan::class, 'plan_id', 'id');
+//    }
 
-    public function scopeByPlanId(Builder $builder, int $planId): Builder
-    {
-        return $builder->where('plan_id', $planId);
-    }
+//    public function scopeByPlanId(Builder $builder, int $planId): Builder
+//    {
+//        return $builder->where('plan_id', $planId);
+//    }
 
     public function active(): bool
     {
@@ -201,6 +204,8 @@ class SimpleSubscriptionPlanSubscription extends Model
         $feature = $this->plan->features()->whereId($featureId)->first();
 
         $usage = $this->usage()->firstOrNew([
+            'subscriber_id' => $featureId,
+            'subscriber_type' => 'Rabol\SimpleSubscription\Models\SimpleSubscriptionPlanFeature',
             'subscription_id' => $this->getKey(),
             'feature_id' => $feature->getKey(),
         ]);
@@ -228,13 +233,14 @@ class SimpleSubscriptionPlanSubscription extends Model
 
     public function reduceFeatureUsage(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
-        $usage = $this->usage()->whereFeaturId($featureId)->first();
+        $usage = $this->usage()->whereFeatureId($featureId)->first();
 
         if (is_null($usage)) {
-            return null;
+            //return null;
+            $usage = $this->recordFeatureUsage($featureId,$uses);
         }
 
-        $usage->used = max($usage->used - $uses, 0);
+        $usage->used = max($usage->used ?? 0 - $uses, 0);
 
         $usage->save();
 
@@ -252,7 +258,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         // If the feature value is zero, let's return false since
         // there's no uses available. (useful to disable countable features)
-        if ($usage->expired() || is_null($featureValue) || $featureValue === '0' || $featureValue === 'false') {
+        if ($usage && $usage->expired() || is_null($featureValue) || $featureValue === '0' || $featureValue === 'false') {
             return false;
         }
 
@@ -263,6 +269,9 @@ class SimpleSubscriptionPlanSubscription extends Model
     public function getFeatureUsage(int $featureId): int
     {
         $usage = $this->usage()->whereFeatureId($featureId)->first();
+
+        if(!$usage)
+            return 0;
 
         return ! $usage->expired() ? $usage->used : 0;
     }
