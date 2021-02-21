@@ -15,7 +15,7 @@ class CreateSimpleSubscriptionPlanFeaturesTable extends Migration
             $table->unsignedBigInteger('plan_id');
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('value')->nullable();
+            $table->integer('value')->nullable();
             $table->smallInteger('resettable_period')->unsigned()->default(0)->nullable();
             $table->string('resettable_interval')->default('month')->nullable();
             $table->smallInteger('sort_order')->unsigned()->default(0)->nullable();
