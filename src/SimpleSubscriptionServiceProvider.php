@@ -41,8 +41,6 @@ class SimpleSubscriptionServiceProvider extends PackageServiceProvider
                     'create_simple_subscription_plan_subscriptions_table'
                 ]
                 );
- 
-
     }
 
     public function boot()
