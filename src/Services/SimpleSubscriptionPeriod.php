@@ -58,7 +58,6 @@ class SimpleSubscriptionPeriod
                 break;
 
             default:
-                throw new LogicException("{$this->interval} not supported");
 
                 break;
         }
