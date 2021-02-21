@@ -25,9 +25,9 @@ trait HasSubscriptions
         return $this->subscriptions->reject->inactive();
     }
 
-    public function subscription(string $subscriptionSlug): ?SimpleSubscriptionPlanSubscription
+    public function subscription(string $subscriptionName): ?SimpleSubscriptionPlanSubscription
     {
-        return $this->subscriptions()->where('slug', $subscriptionSlug)->first();
+        return $this->subscriptions()->whereName($subscriptionName)->first();
     }
 
     public function subscribedPlans(): ?SimpleSubscriptionPlanSubscription
