@@ -294,7 +294,31 @@ By default the subscription will remain active until the end of the period, you 
 ```php
 $user->subscription('My cool subscription')->cancel(true);
 ```
-More documentation will be added soon.
+
+### Scopes
+
+#### Subscription Model
+
+```php
+// Get subscriptions by plan
+$subscriptions = SimpleSubscriptionPlanSubscription::byPlanId($plan_id)->get();
+
+// Get bookings of the given user
+$user = \App\Models\User::find(1);
+$bookingsOfUser = SimpleSubscriptionPlanSubscription::ofSubscriber($user)->get();
+
+// Get subscriptions with trial ending in 3 days
+$subscriptions = SimpleSubscriptionPlanSubscription::findEndingTrial(3)->get();
+
+// Get subscriptions with ended trial
+$subscriptions = SimpleSubscriptionPlanSubscription::findEndedTrial()->get();
+
+// Get subscriptions with period ending in 3 days
+$subscriptions = SimpleSubscriptionPlanSubscription::findEndingPeriod(3)->get();
+
+// Get subscriptions with ended period
+$subscriptions = SimpleSubscriptionPlanSubscription::findEndedPeriod()->get();
+```
 
 
 ## Testing
