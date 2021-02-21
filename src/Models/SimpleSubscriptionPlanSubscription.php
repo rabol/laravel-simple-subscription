@@ -237,7 +237,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         if (is_null($usage)) {
             //return null;
-            $usage = $this->recordFeatureUsage($featureId,$uses);
+            $usage = $this->recordFeatureUsage($featureId, $uses);
         }
 
         $usage->used = max($usage->used ?? 0 - $uses, 0);
@@ -270,8 +270,9 @@ class SimpleSubscriptionPlanSubscription extends Model
     {
         $usage = $this->usage()->whereFeatureId($featureId)->first();
 
-        if(!$usage)
+        if (! $usage) {
             return 0;
+        }
 
         return ! $usage->expired() ? $usage->used : 0;
     }
