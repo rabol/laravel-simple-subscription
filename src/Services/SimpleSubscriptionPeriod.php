@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rabol\SimpleSubscription\Services;
 
 use Carbon\Carbon;
+use Symfony\Component\Mime\Exception\LogicException;
 
 class SimpleSubscriptionPeriod
 {
@@ -33,30 +34,27 @@ class SimpleSubscriptionPeriod
             $this->intervalCount = 1;
         }
 
-        $this->end = Carbon::now();
+        $this->end = clone $this->start;
 
         switch ($this->interval) {
             case 'day':
                 $this->end->addDays($this->intervalCount);
-
                 break;
 
             case 'week':
                 $this->end->addWeeks($this->intervalCount);
-
                 break;
 
             case 'month':
                 $this->end->addMonths($this->intervalCount);
-
                 break;
 
             case 'year':
                 $this->end->addYears($this->intervalCount);
-
                 break;
 
             default:
+                throw new LogicException("{$this->interval} not supported");
                 break;
         }
     }

@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-
 namespace Rabol\SimpleSubscription\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -37,13 +35,6 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(SimpleSubscriptionPlanSubscription::class, 'subscription_id', 'id', 'subscription');
-    }
-
-    public function scopeByFeatureSlug(Builder $builder, string $featureSlug): Builder
-    {
-        $feature = SimpleSubscriptionPlanFeature::whereSlug($featureSlug)->first();
-
-        return $builder->where('feature_id', $feature->getKey() ?? null);
     }
 
     public function expired(): bool

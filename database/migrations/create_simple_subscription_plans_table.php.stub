@@ -11,7 +11,6 @@ class CreateSimpleSubscriptionPlansTable extends Migration
         Schema::create('ss_plans', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('slug');
             $table->string('name');
             
             $table->longText('description')->nullable();

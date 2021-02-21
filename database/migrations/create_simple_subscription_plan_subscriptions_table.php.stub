@@ -11,10 +11,8 @@ class CreateSimpleSubscriptionPlanSubscriptionsTable extends Migration
         Schema::create('ss_plan_subscriptions', function (Blueprint $table) {
             
             $table->bigIncrements('id');
-
             $table->morphs('subscriber');
             $table->unsignedBigInteger('plan_id');
-            $table->string('slug');
             $table->string('name');
             $table->string('description')->nullable();
             $table->dateTime('trial_ends_at')->nullable();
@@ -23,7 +21,6 @@ class CreateSimpleSubscriptionPlanSubscriptionsTable extends Migration
             $table->dateTime('cancels_at')->nullable();
             $table->dateTime('canceled_at')->nullable();
             $table->string('timezone')->nullable();
-            
             $table->timestamps();
         });
     }

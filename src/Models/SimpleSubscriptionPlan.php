@@ -6,17 +6,12 @@ namespace Rabol\SimpleSubscription\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 class SimpleSubscriptionPlan extends Model
 {
-    use HasSlug;
-
     protected $table = 'ss_plans';
 
     protected $fillable = [
-        'slug',
         'name',
         'description',
         'is_active',
@@ -38,7 +33,6 @@ class SimpleSubscriptionPlan extends Model
 
     protected $casts = [
         'name' => 'string',
-        'slug' => 'string',
         'is_active' => 'boolean',
         'price' => 'float',
         'signup_fee' => 'float',
@@ -55,18 +49,6 @@ class SimpleSubscriptionPlan extends Model
         'active_subscribers_limit' => 'integer',
         'sort_order' => 'integer',
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function features(): HasMany
     {
@@ -91,11 +73,6 @@ class SimpleSubscriptionPlan extends Model
     public function hasGrace(): bool
     {
         return $this->grace_period && $this->grace_interval;
-    }
-
-    public function getFeatureBySlug(string $slug): ?SimpleSubscriptionPlanFeature
-    {
-        return $this->features()->whereSlug($slug)->first();
     }
 
     public function activate(): self

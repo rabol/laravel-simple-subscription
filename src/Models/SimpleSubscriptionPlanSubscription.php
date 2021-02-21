@@ -7,26 +7,21 @@ namespace Rabol\SimpleSubscription\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
 use Rabol\SimpleSubscription\Traits\BelongsToPlan;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
 class SimpleSubscriptionPlanSubscription extends Model
 {
-    use BelongsToPlan;
-    use HasSlug;
-
     protected $table = 'ss_plan_subscriptions';
 
     protected $fillable = [
         'subscriber_id',
         'subscriber_type',
         'plan_id',
-        'slug',
         'name',
         'description',
         'trial_ends_at',
@@ -40,7 +35,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         'subscriber_id' => 'integer',
         'subscriber_type' => 'string',
         'plan_id' => 'integer',
-        'slug' => 'string',
         'name' => 'string',
         'description' => 'string',
         'trial_ends_at' => 'datetime',
@@ -49,18 +43,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         'cancels_at' => 'datetime',
         'canceled_at' => 'datetime',
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function subscriber(): MorphTo
     {
@@ -72,16 +54,16 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(SimpleSubscriptionPlan::class, 'plan_id', 'id');
     }
 
-    public function getPlanNameAttribute()
+    public function scopeByPlanId(Builder $builder, int $planId): Builder
     {
-        return $this->plan->name;
+        return $builder->where('plan_id', $planId);
     }
-    
+
     public function active(): bool
     {
         return ! $this->ended() || $this->onTrial();
@@ -215,9 +197,9 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
-    public function recordFeatureUsage(string $featureSlug, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
+    public function recordFeatureUsage(int $featureId, int $uses = 1, bool $incremental = true): SimpleSubscriptionPlanSubscriptionUsage
     {
-        $feature = $this->plan->features()->where('slug', $featureSlug)->first();
+        $feature = $this->plan->features()->whereId($featureId)->first();
 
         $usage = $this->usage()->firstOrNew([
             'subscription_id' => $this->getKey(),
@@ -245,9 +227,9 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $usage;
     }
 
-    public function reduceFeatureUsage(string $featureSlug, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
+    public function reduceFeatureUsage(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
-        $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
+        $usage = $this->usage()->whereFeaturId($featureId)->first();
 
         if (is_null($usage)) {
             return null;
@@ -260,10 +242,10 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $usage;
     }
 
-    public function canUseFeature(string $featureSlug): bool
+    public function canUseFeature(int $featureId): bool
     {
-        $featureValue = $this->getFeatureValue($featureSlug);
-        $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
+        $featureValue = $this->getFeatureValue($featureId);
+        $usage = $this->usage()->whereFeatureId($featureId)->first();
 
         if ($featureValue === 'true') {
             return true;
@@ -276,24 +258,24 @@ class SimpleSubscriptionPlanSubscription extends Model
         }
 
         // Check for available uses
-        return $this->getFeatureRemaining($featureSlug) > 0;
+        return $this->getFeatureRemaining($featureId) > 0;
     }
 
-    public function getFeatureUsage(string $featureSlug): int
+    public function getFeatureUsage(int $featureId): int
     {
-        $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
+        $usage = $this->usage()->whereFeatureId($featureId)->first();
 
         return ! $usage->expired() ? $usage->used : 0;
     }
 
-    public function getFeatureRemaining(string $featureSlug): int
+    public function getFeatureRemaining(int $featureId): int
     {
-        return $this->getFeatureValue($featureSlug) - $this->getFeatureUsage($featureSlug);
+        return $this->getFeatureValue($featureId) - $this->getFeatureUsage($featureId);
     }
 
-    public function getFeatureValue(string $featureSlug)
+    public function getFeatureValue(int $featureId)
     {
-        $feature = $this->plan->features()->where('slug', $featureSlug)->first();
+        $feature = $this->plan->features()->whereId($featureId)->first();
 
         return $feature->value ?? null;
     }

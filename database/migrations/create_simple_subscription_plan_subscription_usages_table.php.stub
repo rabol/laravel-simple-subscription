@@ -12,14 +12,12 @@ class CreateSimpleSubscriptionPlanSubscriptionUsagesTable extends Migration
         Schema::create('ss_plan_subscription_usages', function (Blueprint $table) {
             
             $table->bigIncrements('id');
-
             $table->morphs('subscriber');
             $table->unsignedBigInteger('subscription_id')->unsigned();
             $table->unsignedBigInteger('feature_id')->unsigned();
             $table->smallInteger('used')->unsigned();
             $table->dateTime('valid_until')->nullable();
             $table->string('timezone')->nullable();
-            
             $table->timestamps();
         });
     }
