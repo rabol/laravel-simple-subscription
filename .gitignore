@@ -10,3 +10,4 @@ docs
 phpunit.xml
 psalm.xml
 vendor
+.github/workflows/run-tests copy.yml
