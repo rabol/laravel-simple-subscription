@@ -34,7 +34,7 @@ trait HasSubscriptions
     {
         $planIds = $this->subscriptions->reject->inactive()->pluck('plan_id')->unique();
 
-        return app('rinvex.subscriptions.plan')->whereIn('id', $planIds)->get();
+        return SimpleSubscriptionPlanSubscription::whereIn('id', $planIds)->get();
     }
 
     public function subscribedTo($planId): bool
