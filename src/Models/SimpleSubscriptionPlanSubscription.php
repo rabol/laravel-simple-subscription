@@ -224,10 +224,15 @@ class SimpleSubscriptionPlanSubscription extends Model
         $usage = $this->usage()->whereFeatureId($featureId)->whereSubscriptionId($this->id)->first();
 
         if (is_null($usage)) {
+<<<<<<< HEAD
             $usage = SimpleSubscriptionPlanSubscriptionUsage::create([
                 'subscription_id' => $this->id,
                 'feature_id' => $featureId,
             ]);
+=======
+            //return null;
+            $usage = $this->recordFeatureUsage($featureId, $uses);
+>>>>>>> 5f230fc2f5de511d292adf76f7e8c57b29de4dc5
         }
 
         $usage->used = $usage->used + $uses;
@@ -243,7 +248,16 @@ class SimpleSubscriptionPlanSubscription extends Model
     public function getFeatureUsage(int $featureId): int
     {
         $usage = $this->usage()->whereFeatureId($featureId)->first();
+<<<<<<< HEAD
         return $usage->used ?? 0;
+=======
+
+        if (! $usage) {
+            return 0;
+        }
+
+        return ! $usage->expired() ? $usage->used : 0;
+>>>>>>> 5f230fc2f5de511d292adf76f7e8c57b29de4dc5
     }
 
     public function getFeatureRemaining(int $featureId): int

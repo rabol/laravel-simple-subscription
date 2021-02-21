@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rabol\SimpleSubscription\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Rabol\SimpleSubscription\Services\SimpleSubscriptionPeriod;
-use Carbon\Carbon;
 use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 
 class SimpleSubscriptionPlanFeature extends Model
