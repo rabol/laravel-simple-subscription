@@ -47,12 +47,21 @@ class SimpleSubscriptionPlanSubscription extends Model
 
     public function subscriber(): MorphTo
     {
-        return $this->morphTo('subscriber', 'subscriber_type', 'subscriber_id', 'id');
+        return $this->morphTo(
+            'subscriber',
+            'subscriber_type',
+            'subscriber_id',
+            'id'
+        );
     }
 
     public function usage(): hasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
+        return $this->hasMany(
+            SimpleSubscriptionPlanSubscriptionUsage::class,
+            'subscription_id',
+            'id'
+        );
     }
 
     public function active(): bool
@@ -121,7 +130,7 @@ class SimpleSubscriptionPlanSubscription extends Model
     public function renew()
     {
         if ($this->ended() && $this->canceled()) {
-            throw new \LogicException('Unable to renew canceled ended subscription.');
+            throw new \LogicException(__('Unable to renew canceled ended subscription.'));
         }
 
         $subscription = $this;
@@ -141,7 +150,10 @@ class SimpleSubscriptionPlanSubscription extends Model
 
     public function scopeOfSubscriber(Builder $builder, Model $subscriber): Builder
     {
-        return $builder->where('subscriber_type', $subscriber->getMorphClass())->where('subscriber_id', $subscriber->getKey());
+        return $builder->where(
+            'subscriber_type',
+            $subscriber->getMorphClass()
+        )->where('subscriber_id', $subscriber->getKey());
     }
 
     public function scopeFindEndingTrial(Builder $builder, int $dayRange = 3): Builder
@@ -237,7 +249,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 
     public function canUseFeature(int $featureId): bool
     {
-        return $this->getFeatureRemaining($featureId) != 0 ? true : false;
+        return $this->getFeatureRemaining($featureId) != 0;
     }
 
     public function getFeatureUsage(int $featureId): int

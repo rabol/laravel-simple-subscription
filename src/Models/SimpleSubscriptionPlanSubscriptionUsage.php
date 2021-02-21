@@ -29,12 +29,22 @@ class SimpleSubscriptionPlanSubscriptionUsage extends Model
 
     public function feature(): BelongsTo
     {
-        return $this->belongsTo(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id', 'feature');
+        return $this->belongsTo(
+            SimpleSubscriptionPlanFeature::class,
+            'feature_id',
+            'id',
+            'feature'
+        );
     }
 
     public function subscription(): BelongsTo
     {
-        return $this->belongsTo(SimpleSubscriptionPlanSubscription::class, 'subscription_id', 'id', 'subscription');
+        return $this->belongsTo(
+            SimpleSubscriptionPlanSubscription::class,
+            'subscription_id',
+            'id',
+            'subscription'
+        );
     }
 
     public function expired(): bool

@@ -38,7 +38,11 @@ class SimpleSubscriptionPlanFeature extends Model
 
     public function usage(): HasMany
     {
-        return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'feature_id', 'id');
+        return $this->hasMany(
+            SimpleSubscriptionPlanSubscriptionUsage::class,
+            'feature_id',
+            'id'
+        );
     }
 
     public function getResetDate(Carbon $dateFrom): Carbon
