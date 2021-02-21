@@ -65,8 +65,42 @@ class User extends Authenticatable
 }
 ```
 
-That's it, now you can use subscriptions on your user modelwe only have to use that trait in our User model! Now your users may subscribe to plans.
+That's it, now you can use subscriptions on your user model only have to use that trait in our User model! Now your users may subscribe to plans.
 
+## Create a new Plan
+
+```php
+$newPlan = SimpleSubscriptionPlan::create([
+    'name' => 'My cool plan',
+    'description' => 'This is a very cool plan',
+    'is_active' => true,
+    'price' => 12.50,
+    'signup_fee' => 0,
+    'currency' => 'eur',
+    'trial_period'  => 1,
+    'trial_interval' => 'week',
+    'invoice_period' => 1,
+    'invoice_interval' => 'month',
+    'grace_period' => 3,
+    'grace_interval' => 'day',
+]);
+````
+
+Add a feature
+
+```php
+
+$planFeature = $newPlan
+    ->features()
+    ->create([
+        'name' => 'My cool feature',
+        'description' => 'This is my cool feature',
+        'value' => 100,
+        'resettable_period' => 2,
+        'resettable_interval' => 'month',
+        'sort_order' => 1,
+    ]);
+```
 
 ## Subscription plan details
 
