@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rabol\SimpleSubscription\Services;
 
 use Carbon\Carbon;
-use Symfony\Component\Mime\Exception\LogicException;
 
 class SimpleSubscriptionPeriod
 {
