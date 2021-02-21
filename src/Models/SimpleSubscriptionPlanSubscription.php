@@ -56,16 +56,6 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'subscription_id', 'id');
     }
 
-//    public function plan(): BelongsTo
-//    {
-//        return $this->belongsTo(SimpleSubscriptionPlan::class, 'plan_id', 'id');
-//    }
-
-//    public function scopeByPlanId(Builder $builder, int $planId): Builder
-//    {
-//        return $builder->where('plan_id', $planId);
-//    }
-
     public function active(): bool
     {
         return ! $this->ended() || $this->onTrial();
@@ -204,10 +194,8 @@ class SimpleSubscriptionPlanSubscription extends Model
         $feature = $this->plan->features()->whereId($featureId)->first();
 
         $usage = $this->usage()->firstOrNew([
-            'subscriber_id' => $featureId,
-            'subscriber_type' => 'Rabol\SimpleSubscription\Models\SimpleSubscriptionPlanFeature',
-            'subscription_id' => $this->getKey(),
-            'feature_id' => $feature->getKey(),
+            'subscription_id' => $this->id,
+            'feature_id' => $feature->id,
         ]);
 
         if ($feature->resettable_period) {
@@ -231,49 +219,31 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $usage;
     }
 
-    public function reduceFeatureUsage(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
+    public function increaseFeatureUsage(int $featureId, int $uses = 1): ?SimpleSubscriptionPlanSubscriptionUsage
     {
-        $usage = $this->usage()->whereFeatureId($featureId)->first();
+        $usage = $this->usage()->whereFeatureId($featureId)->whereSubscriptionId($this->id)->first();
 
         if (is_null($usage)) {
-            //return null;
-            $usage = $this->recordFeatureUsage($featureId,$uses);
+            $usage = SimpleSubscriptionPlanSubscriptionUsage::create([
+                'subscription_id' => $this->id,
+                'feature_id' => $featureId,
+            ]);
         }
 
-        $usage->used = max($usage->used ?? 0 - $uses, 0);
-
-        $usage->save();
-
+        $usage->used = $usage->used + $uses;
+        $usage->update();
         return $usage;
     }
 
     public function canUseFeature(int $featureId): bool
     {
-        $featureValue = $this->getFeatureValue($featureId);
-        $usage = $this->usage()->whereFeatureId($featureId)->first();
-
-        if ($featureValue === 'true') {
-            return true;
-        }
-
-        // If the feature value is zero, let's return false since
-        // there's no uses available. (useful to disable countable features)
-        if ($usage && $usage->expired() || is_null($featureValue) || $featureValue === '0' || $featureValue === 'false') {
-            return false;
-        }
-
-        // Check for available uses
-        return $this->getFeatureRemaining($featureId) > 0;
+        return $this->getFeatureRemaining($featureId) != 0 ? true : false;
     }
 
     public function getFeatureUsage(int $featureId): int
     {
         $usage = $this->usage()->whereFeatureId($featureId)->first();
-
-        if(!$usage)
-            return 0;
-
-        return ! $usage->expired() ? $usage->used : 0;
+        return $usage->used ?? 0;
     }
 
     public function getFeatureRemaining(int $featureId): int
@@ -281,10 +251,10 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this->getFeatureValue($featureId) - $this->getFeatureUsage($featureId);
     }
 
-    public function getFeatureValue(int $featureId)
+    public function getFeatureValue(int $featureId): int
     {
         $feature = $this->plan->features()->whereId($featureId)->first();
 
-        return $feature->value ?? null;
+        return $feature->value ?? 0;
     }
 }

@@ -13,7 +13,7 @@ use Rabol\SimpleSubscription\Traits\BelongsToPlan;
 class SimpleSubscriptionPlanFeature extends Model
 {
     use BelongsToPlan;
-    
+
     protected $table = 'ss_plan_features';
 
     protected $fillable = [
@@ -29,7 +29,7 @@ class SimpleSubscriptionPlanFeature extends Model
     protected $casts = [
         'plan_id' => 'integer',
         'name' => 'string',
-        'value' => 'string',
+        'value' => 'integer',
         'resettable_period' => 'integer',
         'resettable_interval' => 'string',
         'sort_order' => 'integer',
@@ -41,16 +41,9 @@ class SimpleSubscriptionPlanFeature extends Model
         return $this->hasMany(SimpleSubscriptionPlanSubscriptionUsage::class, 'feature_id', 'id');
     }
 
-    /**
-     * Get feature's reset date.
-     *
-     * @param string $dateFrom
-     *
-     * @return \Carbon\Carbon
-     */
     public function getResetDate(Carbon $dateFrom): Carbon
     {
-        $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom ?? now());
+        $period = new SimpleSubscriptionPeriod($this->resettable_interval, $this->resettable_period, $dateFrom);
 
         return $period->getEndDate();
     }
