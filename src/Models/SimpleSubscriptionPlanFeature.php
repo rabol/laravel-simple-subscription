@@ -31,11 +31,6 @@ class SimpleSubscriptionPlanFeature extends Model
         'deleted_at' => 'datetime',
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     public function usage(): HasMany
     {
         return $this->hasMany(SimpleSubscriptionPlanFeature::class, 'feature_id', 'id');

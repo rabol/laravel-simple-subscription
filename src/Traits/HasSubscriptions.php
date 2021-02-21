@@ -30,7 +30,7 @@ trait HasSubscriptions
         return $this->subscriptions()->whereName($subscriptionName)->first();
     }
 
-    public function subscribedPlans(): ?SimpleSubscriptionPlanSubscription
+    public function subscribedPlans(): ?Collection
     {
         $planIds = $this->subscriptions->reject->inactive()->pluck('plan_id')->unique();
 
@@ -44,7 +44,7 @@ trait HasSubscriptions
         return $subscription && $subscription->active();
     }
 
-    public function newSubscription(string $subscription, SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
+    public function newSubscription(SimpleSubscriptionPlan $plan, Carbon $startDate = null): SimpleSubscriptionPlanSubscription
     {
         if (is_null($startDate)) {
             $startDate = Carbon::now();
@@ -54,7 +54,7 @@ trait HasSubscriptions
         $period = new SimpleSubscriptionPeriod($plan->invoice_interval, $plan->invoice_period, $trial->getEndDate());
 
         return $this->subscriptions()->create([
-            'name' => $subscription,
+            'name' => $plan->name,
             'description' => $plan->description,
             'plan_id' => $plan->id,
             'trial_ends_at' => $trial->getEndDate(),
