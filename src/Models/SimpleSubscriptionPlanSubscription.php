@@ -97,6 +97,9 @@ class SimpleSubscriptionPlanSubscription extends Model
             $this->ends_at = $this->canceled_at;
         }
 
+        // Set the date for which this is valid
+        $this->cancels_at = $this->ends_at;
+
         $this->save();
 
         return $this;
@@ -120,6 +123,14 @@ class SimpleSubscriptionPlanSubscription extends Model
         return $this;
     }
 
+    public function canRenew()
+    {
+        if ($this->ended() && $this->canceled()) {
+            return false;
+        }
+
+        return true;
+    }
     /**
      * Renew subscription period.
      *
@@ -142,6 +153,7 @@ class SimpleSubscriptionPlanSubscription extends Model
             // Renew period
             $subscription->setNewPeriod($this->plan->invoice_interval, $this->plan->invoice_period, Carbon::now());
             $subscription->canceled_at = null;
+            $subscription->cancels_at = null;
             $subscription->save();
         });
 

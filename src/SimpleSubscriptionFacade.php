@@ -11,6 +11,6 @@ class SimpleSubscriptionFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'laravel-simple-subscription';
+        return SimpleSubscription::class;
     }
 }
