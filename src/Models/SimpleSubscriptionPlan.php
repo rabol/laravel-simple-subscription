@@ -29,7 +29,7 @@ class SimpleSubscriptionPlan extends Model
         'prorate_extend_due',
         'active_subscribers_limit',
         'sort_order',
-        'plan_type'
+        'plan_type',
    ];
 
     protected $casts = [
