@@ -131,6 +131,7 @@ class SimpleSubscriptionPlanSubscription extends Model
 
         return true;
     }
+
     /**
      * Renew subscription period.
      *
