@@ -36,6 +36,7 @@ class CreateSimpleSubscriptionPlansTable extends Migration
             $table->smallInteger('active_subscribers_limit')->unsigned()->nullable();
 
             $table->mediumInteger('sort_order')->unsigned()->default(0)->nullable();
+            $table->smallInteger('plan_type')->unsigned()->default(0)->nullable();
 
             $table->timestamps();
         });

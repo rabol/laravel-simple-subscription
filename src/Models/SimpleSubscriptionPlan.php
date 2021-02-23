@@ -29,6 +29,7 @@ class SimpleSubscriptionPlan extends Model
         'prorate_extend_due',
         'active_subscribers_limit',
         'sort_order',
+        'plan_type'
    ];
 
     protected $casts = [
@@ -48,6 +49,7 @@ class SimpleSubscriptionPlan extends Model
         'prorate_extend_due' => 'integer',
         'active_subscribers_limit' => 'integer',
         'sort_order' => 'integer',
+        'plan_typer' => 'integer',
     ];
 
     public function features(): HasMany
