@@ -50,6 +50,7 @@ class SimpleSubscriptionPlan extends Model
         'active_subscribers_limit' => 'integer',
         'sort_order' => 'integer',
         'plan_typer' => 'integer',
+        
     ];
 
     public function features(): HasMany
